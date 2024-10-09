@@ -28,9 +28,9 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-
+// colorScheme === "dark" ? DarkTheme : DefaultTheme
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={DefaultTheme}>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="(root)" />
