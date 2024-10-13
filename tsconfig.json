@@ -1,17 +1,15 @@
 {
-  "extends": "expo/tsconfig.base",
+  "extends": "expo/tsconfig.base",  // Kế thừa các thiết lập từ cấu hình mặc định của Expo
   "compilerOptions": {
-    "strict": true,
+    "strict": true,  // Bật các quy tắc kiểm tra nghiêm ngặt của TypeScript
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]  // Đặt alias '@/' trỏ về thư mục gốc
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "**/*.ts",         // Bao gồm tất cả các file TypeScript (.ts)
+    "**/*.tsx",        // Bao gồm tất cả các file TSX (.tsx)
+    ".expo/types/**/*.ts",  // Các file trong thư mục .expo
+    "expo-env.d.ts"    // Định nghĩa kiểu môi trường expo
   ]
 }
