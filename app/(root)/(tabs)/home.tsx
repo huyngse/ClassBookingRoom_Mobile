@@ -3,7 +3,8 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
 import PieChartNe from "@/components/PieChart";
-import BarChartNe from "@/components/BarChart";
+import BarChartNe from "@/components/LineChart";
+import LineChartNe from "@/components/LineChart";
 
 const Home = () => {
   return (
@@ -33,11 +34,11 @@ const Home = () => {
             <Text className="text-center text-4xl p-2">10</Text>
           </View>
         </View>
-        <View className="pt-32">
+        <View className="pt-28 pb-5">
           <PieChartNe />
         </View>
-        <View className="pt-16">
-          <BarChartNe />
+        <View className="pt-20">
+          <LineChartNe />
         </View>
       </View>
     </SafeAreaView>

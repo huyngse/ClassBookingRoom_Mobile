@@ -30,7 +30,7 @@ export default function PieChartNe() {
         accessor={"population"}
         backgroundColor={"transparent"}
         paddingLeft={"15"}
-      
+        // absolute // Hiển thị số liệu trực tiếp trên biểu đồ
       />
     </View>
   );
