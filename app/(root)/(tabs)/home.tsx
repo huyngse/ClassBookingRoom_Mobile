@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
@@ -10,37 +10,39 @@ const Home = () => {
   return (
     <SafeAreaView>
       <ExpoStatusBar style="dark" />
-      <View className="p-3">
-        <Text className="text-2xl text-center font-semibold">Dashboard</Text>
-      </View>
-      <View className="px-3 gap-2">
-        <View className="flex-row gap-2">
-          <View className="bg-zinc-300 p-4 flex-1 rounded-lg">
-            <Text className="text-center">Empty rooms</Text>
-            <Text className="text-center text-4xl p-2">15</Text>
+      <ScrollView className="px-3">
+        <View className="p-3">
+          <Text className="text-2xl text-center font-semibold">Dashboard</Text>
+        </View>
+        <View className="bg-white p-3">
+          <View className="flex-row gap-2 mb-2">
+            <View className="bg-blue-500 rounded-lg flex-1 py-3">
+              <Text className="text-center text-white">Empty rooms</Text>
+              <Text className="text-center text-4xl text-white">15</Text>
+            </View>
+            <View className="bg-green-500 rounded-lg flex-1 py-3">
+              <Text className="text-center text-white">Pending requests</Text>
+              <Text className="text-center text-4xl  text-white">2</Text>
+            </View>
           </View>
-          <View className="bg-zinc-300 p-4 flex-1 rounded-lg">
-            <Text className="text-center">Pending requests</Text>
-            <Text className="text-center text-4xl p-2">2</Text>
+          <View className="flex-row gap-2">
+            <View className="bg-red-500 rounded-lg flex-1 py-3">
+              <Text className="text-center text-white">Total rooms</Text>
+              <Text className="text-center text-4xl text-white">15</Text>
+            </View>
+            <View className="bg-yellow-400 rounded-lg flex-1 py-3">
+              <Text className="text-center">Total requests</Text>
+              <Text className="text-center text-4xl">10</Text>
+            </View>
           </View>
         </View>
-        <View className="flex-row gap-2">
-          <View className="bg-zinc-300 p-4 flex-1 rounded-lg">
-            <Text className="text-center">Total rooms</Text>
-            <Text className="text-center text-4xl p-2">15</Text>
-          </View>
-          <View className="bg-zinc-300 p-4 flex-1 rounded-lg">
-            <Text className="text-center">Total requests</Text>
-            <Text className="text-center text-4xl p-2">10</Text>
-          </View>
-        </View>
-        <View className="pt-28 pb-5">
+        <View className="pt-5 pb-5">
           <PieChartNe />
         </View>
-        <View className="pt-20">
+        <View className="pt-5">
           <LineChartNe />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
