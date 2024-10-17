@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "65723309789",
+    "project_id": "fu-booking-room",
+    "storage_bucket": "fu-booking-room.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:65723309789:android:a4c46603a459652762c534",
+        "android_client_info": {
+          "package_name": "com.giahuy7753.ClassBookingRoom_Mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "65723309789-fvpnog62i2vjv4u5viiua5a06vuf03ic.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDck7TsbDlokNET9glAeC3iUTYNyzyhcVI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "65723309789-fvpnog62i2vjv4u5viiua5a06vuf03ic.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
