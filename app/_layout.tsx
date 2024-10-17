@@ -7,14 +7,12 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
-
-import { useColorScheme } from "@/hooks/useColorScheme";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
@@ -28,15 +26,27 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
-// colorScheme === "dark" ? DarkTheme : DefaultTheme
+  const theme = {
+    ...MD3LightTheme,
+    roundness: 2,
+    colors: {
+      ...MD3LightTheme.colors,
+      primary: '#3498db',
+      secondary: '#f1c40f',
+      tertiary: '#a1b2c3',
+    },
+  };
+  // colorScheme === "dark" ? DarkTheme : DefaultTheme
   return (
-    <ThemeProvider value={DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(root)" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <PaperProvider theme={theme}>
+      <ThemeProvider value={DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(root)" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </ThemeProvider>
+    </PaperProvider>
   );
 }
