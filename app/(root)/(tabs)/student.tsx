@@ -3,7 +3,7 @@ import { View, Text, Switch, Image, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import { CheckIcon, XIcon } from 'lucide-react-native';
 import { styled } from 'nativewind';
-
+import { useNavigation } from '@react-navigation/native';
 
 const students = [
   {
@@ -44,13 +44,15 @@ const students = [
   },
 ];
 
-
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledButton = styled(Button);
 
 const Student = () => {
   const [studentsData, setStudentsData] = useState(students);
+
+  // Khai báo navigation
+  const navigation = useNavigation();
 
   const toggleStatus = (id) => {
     setStudentsData((prevState) =>
@@ -66,6 +68,11 @@ const Student = () => {
         student.id === id ? { ...student, isVerified: !student.isVerified } : student
       )
     );
+  };
+
+  const handleEdit = (student) => {
+    // Điều hướng đến trang EditStudent và truyền dữ liệu sinh viên
+    navigation.navigate('student/[id]/edit-student', { student });
   };
 
   return (
@@ -142,7 +149,7 @@ const Student = () => {
             <StyledButton
               mode="contained"
               className="bg-blue-500 ml-2"
-              onPress={() => alert(`Edit student: ${student.fullName}`)}
+              onPress={() => handleEdit(student)}  // Điều hướng đến trang Edit
             >
               Edit
             </StyledButton>
