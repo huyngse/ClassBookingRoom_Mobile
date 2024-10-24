@@ -72,7 +72,7 @@ const Student = () => {
 
   const handleEdit = (student) => {
     // Điều hướng đến trang EditStudent và truyền dữ liệu sinh viên
-    navigation.navigate('student/[id]/edit-student', { student });
+   navigation.navigate('edit-student', { student });
   };
 
   return (

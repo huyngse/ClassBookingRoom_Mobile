@@ -6,8 +6,6 @@ import { styled } from 'nativewind';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
-const StyledTextInput = styled(TextInput);
-const StyledButton = styled(Button);
 
 const EditStudent = () => {
   const route = useRoute();
@@ -26,8 +24,7 @@ const EditStudent = () => {
   };
 
   const handleChooseAvatar = () => {
-    // Thực hiện logic chọn avatar (giả lập thay đổi URL avatar ở đây)
-    setAvatar('https://i.pravatar.cc/100?img=5'); // Giả lập việc thay đổi avatar
+    setAvatar('https://i.pravatar.cc/100?img=5');
   };
 
   return (
@@ -46,7 +43,7 @@ const EditStudent = () => {
           <TouchableOpacity onPress={handleChooseAvatar}>
             <Image
               source={{ uri: avatar }}
-              className="w-24 h-24 rounded-full border-2 border-gray-300"
+              style={{ width: 96, height: 96, borderRadius: 48, borderWidth: 2, borderColor: '#ccc' }} // Thay thế className bằng style
             />
           </TouchableOpacity>
           <StyledText className="text-gray-600 mt-2">Tap to change avatar</StyledText>
@@ -55,66 +52,68 @@ const EditStudent = () => {
         {/* Full Name */}
         <StyledView className="mb-4">
           <StyledText className="text-gray-700 mb-2">Full Name</StyledText>
-          <StyledTextInput
+          <TextInput
             value={fullName}
             onChangeText={setFullName}
             placeholder="Enter full name"
-            className="border border-gray-300 rounded-lg p-2"
+            style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8 }} // Thay thế className bằng style
           />
         </StyledView>
 
         {/* Email */}
         <StyledView className="mb-4">
           <StyledText className="text-gray-700 mb-2">Email</StyledText>
-          <StyledTextInput
+          <TextInput
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
             placeholder="Enter email"
-            className="border border-gray-300 rounded-lg p-2"
+            style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8 }} // Thay thế className bằng style
           />
         </StyledView>
 
         {/* Department */}
         <StyledView className="mb-4">
           <StyledText className="text-gray-700 mb-2">Department</StyledText>
-          <StyledTextInput
+          <TextInput
             value={department}
             onChangeText={setDepartment}
             placeholder="Enter department"
-            className="border border-gray-300 rounded-lg p-2"
+            style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8 }} // Thay thế className bằng style
           />
         </StyledView>
 
         {/* Cohort */}
         <StyledView className="mb-4">
           <StyledText className="text-gray-700 mb-2">Cohort</StyledText>
-          <StyledTextInput
+          <TextInput
             value={cohort}
             onChangeText={setCohort}
             placeholder="Enter cohort"
-            className="border border-gray-300 rounded-lg p-2"
+            style={{ borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 8 }} // Thay thế className bằng style
           />
         </StyledView>
 
         {/* Save Button */}
-        <StyledButton
+        <Button
           mode="contained"
           onPress={handleSave}
-          className="bg-green-500 py-2 rounded-lg"
+          contentStyle={{ paddingVertical: 8 }}
+          style={{ backgroundColor: '#38a169', borderRadius: 8 }}
         >
           Save Changes
-        </StyledButton>
+        </Button>
 
         {/* Back Button */}
-        <StyledButton
+        <Button
           mode="text"
           onPress={() => navigation.goBack()}
-          className="mt-4"
-          textColor="red"
+          contentStyle={{ paddingVertical: 8 }}
+          labelStyle={{ color: 'red' }}
+          style={{ marginTop: 16 }}
         >
           Back to Students
-        </StyledButton>
+        </Button>
       </StyledView>
     </StyledView>
   );
