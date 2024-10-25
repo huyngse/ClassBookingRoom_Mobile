@@ -48,7 +48,7 @@ const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledButton = styled(Button);
 
-const Student = () => {
+const Users = () => {
   const [studentsData, setStudentsData] = useState(students);
 
   // Khai báo navigation
@@ -160,4 +160,4 @@ const Student = () => {
   );
 };
 
-export default Student;
+export default Users;

@@ -3,20 +3,21 @@ import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { styled } from 'nativewind';
-
+import { useLocalSearchParams } from 'expo-router';
 const StyledView = styled(View);
 const StyledText = styled(Text);
 
 const EditStudent = () => {
+  const { id } = useLocalSearchParams<{ id: string }>();
   const route = useRoute();
   const navigation = useNavigation();
-  const { student } = route.params;
+  // const { student } = route.params;
 
-  const [fullName, setFullName] = useState(student.fullName);
-  const [email, setEmail] = useState(student.email);
-  const [department, setDepartment] = useState(student.department);
-  const [cohort, setCohort] = useState(student.cohort);
-  const [avatar, setAvatar] = useState(student.avatar);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [department, setDepartment] = useState("");
+  const [cohort, setCohort] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   const handleSave = () => {
     alert('Student details updated successfully!');
