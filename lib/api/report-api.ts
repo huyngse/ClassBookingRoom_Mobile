@@ -49,7 +49,7 @@ export const approveReport = async (id: number) => {
 };
 export const denyReport = async (id: number, reason: string) => {
   try {
-    // Gửi chuỗi lý do từ chối trực tiếp, không phải là một đối tượng JSON
+    
     const { data } = await axiosClient.put(`/api/reports/${id}/deny`, reason, {
       headers: {
         "Content-Type": "application/json",

@@ -1,123 +1,105 @@
-import { getAllRoom } from "@/lib/api/room-api";
-import { Room as RoomType } from "@/types/room";
-import { FontAwesome } from "@expo/vector-icons";
-import { addWeeks, endOfWeek, format, startOfWeek } from "date-fns";
-import React, { useEffect, useState } from "react";
-import Toast from "react-native-toast-message";
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
-import { Card, Checkbox, IconButton } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ScrollView } from 'react-native';
+import { styled } from 'nativewind';
+import Toast from 'react-native-toast-message';
+import { getAllReports } from '@/lib/api/report-api'; 
 
-const RoomCard = ({ room }: { room: RoomType }) => (
-  <View className="mb-5">
-    <Card>
-      <Card.Cover source={{ uri: room.picture }} />
-      <View className="p-3">
-        <Text className="text-2xl font-semibold">Room {room.roomName}</Text>
-        <Text className="text-lg">{room.roomType.name}</Text>
-        <Text className="">Pending booking: {room.numOfPendingBooking}</Text>
-      </View>
-    </Card>
-  </View>
-);
+const StyledView = styled(View);
+const StyledText = styled(Text);
 
-const Room = () => {
-  const [rooms, setRooms] = useState<RoomType[]>([]);
-  const [searchValue, setSearchValue] = useState("");
-  const [selectedWeek, setSelectedWeek] = useState(new Date());
-  const [showPendingOnly, setShowPendingOnly] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const getWeeks = () => {
-    const weeks = [];
-    for (let i = -2; i <= 2; i++) {
-      const weekStart = startOfWeek(addWeeks(new Date(), i));
-      weeks.push(weekStart);
-    }
-    return weeks;
+const getStatusStyle = (status) => {
+  switch (status) {
+    case 'pending':
+      return 'bg-yellow-500 text-black';
+    case 'approved':
+      return 'bg-green-500 text-white';
+    case 'rejected':
+      return 'bg-red-500 text-white';
+    default:
+      return 'bg-gray-500 text-white';
+  }
+};
+
+const ReportComponent = ({ report }) => {
+  const handleApprove = () => {
+    console.log('Report Approved');
   };
 
-  const weeks = getWeeks();
+  const handleReject = () => {
+    console.log('Report Rejected');
+  };
+
+  const handleDelete = () => {
+    console.log('Report Deleted');
+  };
+
+  return (
+    <StyledView className="bg-white p-5 rounded-lg mb-5 shadow">
+      <StyledText className="text-lg font-bold">Title:</StyledText>
+      <StyledText className="mb-2">{report.title}</StyledText>
+
+      <StyledText className="text-lg font-bold">Description:</StyledText>
+      <StyledText className="mb-2">{report.description}</StyledText>
+
+      <StyledText className="text-lg font-bold">Room Name:</StyledText>
+      <StyledText className="mb-2">{report.roomName}</StyledText>
+
+      <StyledText className="text-lg font-bold">Student Name:</StyledText>
+      <StyledText className="mb-2">{report.studentFullName}</StyledText>
+
+      <StyledText className="text-lg font-bold">Response:</StyledText>
+      <StyledText className="mb-2">{report.response || "No response yet"}</StyledText>
+
+      <StyledText className="text-lg font-bold">Created At:</StyledText>
+      <StyledText className="mb-2">{new Date(report.createdAt).toLocaleDateString()}</StyledText>
+
+      <StyledText className="text-lg font-bold">Updated At:</StyledText>
+      <StyledText className="mb-2">{new Date(report.updatedAt).toLocaleDateString()}</StyledText>
+
+      <StyledText className="text-lg font-bold">Status:</StyledText>
+      <StyledText className={`px-2 py-1 rounded-full text-center ${getStatusStyle(report.status)} mb-5`}>
+        {report.status.toUpperCase()}
+      </StyledText>
+
+      {report.status === 'pending' ? (
+        <StyledView className="flex-row justify-between mt-5">
+          <Button color="#4CAF50" title="Approve" onPress={handleApprove} />
+          <Button color="#FF9800" title="Reject" onPress={handleReject} />
+        </StyledView>
+      ) : (
+        <Button color="#F44336" title="Delete" onPress={handleDelete} />
+      )}
+    </StyledView>
+  );
+};
+
+const App = () => {
+  const [reports, setReports] = useState([]);
+
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true);
-      const roomResult = await getAllRoom();
-      if (roomResult.error) {
+      const reportResult = await getAllReports(); 
+      if (reportResult.error) {
         Toast.show({
           text1: "Error",
-          text2: roomResult.error,
+          text2: reportResult.error,
           position: "top",
         });
       } else {
-        setRooms(roomResult.data);
+        setReports(reportResult.data);
       }
-      setIsLoading(false);
     };
     fetchData();
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-white px-5">
-      <Text className="text-3xl font-bold text-center my-3">Rooms</Text>
-      <View className="bg-gray-200 rounded-xl flex-row px-4 py-2 items-center my-2">
-        {/* Search icon */}
-        <FontAwesome name="search" size={18} className="" />
-        {/* Search coffee input */}
-        <TextInput
-          placeholder="Search room..."
-          value={searchValue}
-          onChangeText={(value: string) => setSearchValue(value)}
-          className="ml-2 flex-1 text-black"
-        />
-      </View>
-
-      <View className="py-2">
-        <FlatList
-          data={weeks}
-          keyExtractor={(item) => item.toString()}
-          horizontal
-          contentContainerStyle={{ gap: 4 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => setSelectedWeek(item)}
-              className=""
-            >
-              <Text
-                className={`${
-                  item.getTime() == selectedWeek.getTime()
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-200"
-                } font-semibold px-2 py-1 rounded`}
-              >
-                {format(item, "dd/MM")} - {format(endOfWeek(item), "dd/MM")}
-              </Text>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
-      <View className="flex-row items-center">
-        <Checkbox
-          status={showPendingOnly ? "checked" : "unchecked"}
-          onPress={() => {
-            setShowPendingOnly(!showPendingOnly);
-          }}
-        />
-        <Text className="font-semibold">
-          Only show room with pending Booking
-        </Text>
-      </View>
-      <FlatList
-        data={rooms}
-        keyExtractor={(item) => `room-${item.id}`}
-        renderItem={({ item }) => <RoomCard room={item} />}
-      />
-    </SafeAreaView>
+    <ScrollView className="flex-1 p-5">
+      <StyledText className="text-4xl font-bold text-center mb-5 pt-6">Manage Reports</StyledText>
+      {reports.map((report, index) => (
+        <ReportComponent key={index} report={report} />
+      ))}
+    </ScrollView>
   );
 };
 
-export default Room;
+export default App;
