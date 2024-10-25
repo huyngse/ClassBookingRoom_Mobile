@@ -2,12 +2,12 @@ import { View, Text } from "react-native";
 import React from "react";
 import { Stack } from "expo-router";
 
-const RootLayout = () => {
+const RoomLayout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="[id]" />
     </Stack>
   );
 };
 
-export default RootLayout;
+export default RoomLayout;

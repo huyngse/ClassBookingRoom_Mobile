@@ -7,7 +7,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { Octicons } from "@expo/vector-icons";
+import { AntDesign, Octicons } from "@expo/vector-icons";
 const TabIcon = ({
   focused,
   source,
@@ -42,7 +42,7 @@ export default function TabLayout() {
         tabBarStyle: {
           paddingBottom: 5,
           height: 60,
-        }
+        },
       }}
     >
       <Tabs.Screen
@@ -72,12 +72,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="student"
+        name="booking"
         options={{
-          title: "Students",
+          title: "bookings",
           tabBarIcon: ({ focused }) => (
-            <FontAwesome
-              name="group"
+            <AntDesign
+              name="book"
               size={24}
               color={`${focused ? "#4ade80" : "#6b7280"}`}
             />
@@ -85,12 +85,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="report"
+        name="manage"
         options={{
-          title: "Reports",
+          title: "Manage",
           tabBarIcon: ({ focused }) => (
-            <Octicons
-              name="report"
+            <Ionicons
+              name="settings"
               size={24}
               color={`${focused ? "#4ade80" : "#6b7280"}`}
             />
