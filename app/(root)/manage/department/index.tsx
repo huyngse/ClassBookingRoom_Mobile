@@ -4,6 +4,7 @@ import { styled } from "nativewind";
 import { getAllDepartments, deleteDepartment, updateDepartment, createDepartment } from "@/lib/api/department-api"; // Import hàm createDepartment
 import { Department } from "@/types/department";
 import { formatDate } from "@/utils/date";
+import { useRouter } from "expo-router"; // Sử dụng useRouter để điều hướng
 
 const Departments = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -11,6 +12,13 @@ const Departments = () => {
   const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null); // Department được chọn để edit
   const [modalVisible, setModalVisible] = useState(false); // Trạng thái modal
   const [isCreating, setIsCreating] = useState(false); // Kiểm tra trạng thái đang tạo mới hay chỉnh sửa
+
+  const router = useRouter(); // Để sử dụng router điều hướng
+
+  // Điều hướng đến trang chi tiết của department
+  const handleViewDetail = (id) => {
+    router.push(`/manage/department/${id}`);
+  };
 
   // Gọi API lấy danh sách departments
   const fetchDepartments = async () => {
@@ -115,7 +123,7 @@ const Departments = () => {
       <StyledView className="flex-1">
         {/* Nút Create ở trên cùng */}
         <TouchableOpacity
-          onPress={handleCreate} // Gọi handleCreate khi nhấn nút Create
+          onPress={handleCreate} // Chỉ gọi handleCreate
           className="bg-green-500 p-3 rounded-lg mb-4 w-24 items-center self-start"
         >
           <Text className="text-white text-sm">Create</Text>
@@ -123,29 +131,17 @@ const Departments = () => {
 
         {departments.length > 0 ? (
           departments.map((department) => (
-            <StyledView key={department.id} className="mb-4 p-4 bg-white shadow-lg rounded-lg">
-              <StyledText className="text-lg font-bold text-blue-700">{department.name}</StyledText>
-              <StyledText className="text-sm text-gray-600">
-                Created At: {formatDate(new Date(department.createdAt))}
-              </StyledText>
-              <StyledText className="text-sm text-gray-600">
-                Updated At: {formatDate(new Date(department.updatedAt))}
-              </StyledText>
-              <View className="flex-row justify-between mt-4">
-                <TouchableOpacity
-                  onPress={() => handleEdit(department)} // Gọi handleEdit khi nhấn nút Edit
-                  className="bg-blue-500 p-3 rounded-lg w-24 items-center"
-                >
-                  <Text className="text-white text-sm">Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => handleDelete(department.id)} // Gọi handleDelete khi nhấn nút Delete
-                  className="bg-red-500 p-3 rounded-lg w-24 items-center"
-                >
-                  <Text className="text-white text-sm">Delete</Text>
-                </TouchableOpacity>
-              </View>
-            </StyledView>
+            <TouchableOpacity key={department.id} onPress={() => handleViewDetail(department.id)}>
+              <StyledView className="mb-4 p-4 bg-white shadow-lg rounded-lg">
+                <StyledText className="text-lg font-bold text-blue-700">{department.name}</StyledText>
+                <StyledText className="text-sm text-gray-600">
+                  Created At: {formatDate(new Date(department.createdAt))}
+                </StyledText>
+                <StyledText className="text-sm text-gray-600">
+                  Updated At: {formatDate(new Date(department.updatedAt))}
+                </StyledText>
+              </StyledView>
+            </TouchableOpacity>
           ))
         ) : (
           <StyledText>No departments available.</StyledText>
