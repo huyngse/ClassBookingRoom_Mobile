@@ -1,6 +1,9 @@
+import { getAllRoom } from "@/lib/api/room-api";
+import { Room as RoomType } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { addWeeks, endOfWeek, format, startOfWeek } from "date-fns";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Toast from "react-native-toast-message";
 import {
   View,
   Text,
@@ -8,82 +11,28 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { Checkbox } from "react-native-paper";
+import { Card, Checkbox, IconButton } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Icon from "react-native-vector-icons/FontAwesome";
 
-interface RoomData {
-  id?: string;
-  name: string;
-  status: string;
-  bookings?: number;
-  icon: string;
-}
-
-const roomsData: RoomData[] = [
-  { id: "1", name: "Room 101", status: "Empty", icon: "check" },
-  {
-    id: "2",
-    name: "Room 102",
-    status: "Accepted booking",
-    bookings: 1,
-    icon: "book",
-  },
-  { id: "3", name: "Room 103", status: "Empty", icon: "check" },
-  { id: "4", name: "Room 104", status: "Empty", icon: "check" },
-  { id: "5", name: "Room 105", status: "Maintained", icon: "wrench" },
-  { id: "6", name: "Room 106", status: "Empty", icon: "check" },
-  { id: "7", name: "Room 107", status: "Empty", icon: "check" },
-  {
-    id: "8",
-    name: "Room 108",
-    status: "Accepted booking",
-    bookings: 2,
-    icon: "book",
-  },
-  {
-    id: "9",
-    name: "Room 109",
-    status: "Accepted booking",
-    bookings: 2,
-    icon: "book",
-  },
-  { id: "10", name: "Room 110", status: "Empty", icon: "check" },
-  {
-    id: "11",
-    name: "Room 111",
-    status: "Accepted booking",
-    bookings: 3,
-    icon: "book",
-  },
-  {
-    id: "12",
-    name: "Room 112",
-    status: "Accepted booking",
-    bookings: 2,
-    icon: "book",
-  },
-  { id: "13", name: "Room 113", status: "Closed", icon: "times" },
-];
-
-const RoomCard: React.FC<RoomData> = ({ name, status, bookings, icon }) => (
-  <View className="bg-gray-200 rounded-lg flex-row items-center p-5 gap-3 my-1">
-    <Icon name={icon} size={24} color="#333" />
-    <View>
-      <Text className="font-bold text-lg">{name}</Text>
-      {bookings ? (
-        <Text className="text-gray-900 mt-1">{bookings} Pending booking</Text>
-      ) : (
-        <Text className="text-sm text-gray-800 mt-1">{status}</Text>
-      )}
-    </View>
+const RoomCard = ({ room }: { room: RoomType }) => (
+  <View className="mb-5">
+    <Card>
+      <Card.Cover source={{ uri: room.picture }} />
+      <View className="p-3">
+        <Text className="text-2xl font-semibold">Room {room.roomName}</Text>
+        <Text className="text-lg">{room.roomType.name}</Text>
+        <Text className="">Pending booking: {room.numOfPendingBooking}</Text>
+      </View>
+    </Card>
   </View>
 );
 
-const Room: React.FC = () => {
+const Room = () => {
+  const [rooms, setRooms] = useState<RoomType[]>([]);
   const [searchValue, setSearchValue] = useState("");
   const [selectedWeek, setSelectedWeek] = useState(new Date());
   const [showPendingOnly, setShowPendingOnly] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const getWeeks = () => {
     const weeks = [];
     for (let i = -2; i <= 2; i++) {
@@ -94,6 +43,23 @@ const Room: React.FC = () => {
   };
 
   const weeks = getWeeks();
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      const roomResult = await getAllRoom();
+      if (roomResult.error) {
+        Toast.show({
+          text1: "Error",
+          text2: roomResult.error,
+          position: "top",
+        });
+      } else {
+        setRooms(roomResult.data);
+      }
+      setIsLoading(false);
+    };
+    fetchData();
+  }, []);
 
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
@@ -141,19 +107,14 @@ const Room: React.FC = () => {
             setShowPendingOnly(!showPendingOnly);
           }}
         />
-        <Text className="font-semibold">Only show room with pending Booking</Text>
+        <Text className="font-semibold">
+          Only show room with pending Booking
+        </Text>
       </View>
       <FlatList
-        data={roomsData}
-        keyExtractor={(item) => item.id || `room-${item.name}`} // Đảm bảo trả về một chuỗi duy nhất
-        renderItem={({ item }) => (
-          <RoomCard
-            name={item.name}
-            status={item.status}
-            bookings={item.bookings}
-            icon={item.icon}
-          />
-        )}
+        data={rooms}
+        keyExtractor={(item) => `room-${item.id}`}
+        renderItem={({ item }) => <RoomCard room={item} />}
       />
     </SafeAreaView>
   );

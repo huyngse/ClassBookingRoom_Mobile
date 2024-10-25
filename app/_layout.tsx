@@ -9,6 +9,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
+import Toast from "react-native-toast-message";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -31,9 +32,9 @@ export default function RootLayout() {
     roundness: 2,
     colors: {
       ...MD3LightTheme.colors,
-      primary: '#3498db',
-      secondary: '#f1c40f',
-      tertiary: '#a1b2c3',
+      primary: "#3498db",
+      secondary: "#f1c40f",
+      tertiary: "#a1b2c3",
     },
   };
   // colorScheme === "dark" ? DarkTheme : DefaultTheme
@@ -46,6 +47,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="+not-found" />
         </Stack>
+        <Toast />
       </ThemeProvider>
     </PaperProvider>
   );
