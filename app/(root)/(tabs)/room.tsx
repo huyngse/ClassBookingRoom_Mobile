@@ -11,8 +11,15 @@ import {
   TouchableOpacity,
   FlatList,
 } from "react-native";
-import { Card, Checkbox, IconButton } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Card,
+  Checkbox,
+  IconButton,
+  MD2Colors,
+} from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
 
 const RoomCard = ({ room }: { room: RoomType }) => (
   <View className="mb-5">
@@ -42,24 +49,34 @@ const Room = () => {
   };
 
   const weeks = getWeeks();
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      const roomResult = await getAllRoom();
-      if (roomResult.error) {
-        Toast.show({
-          text1: "Error",
-          text2: roomResult.error,
-          position: "top",
-        });
-      } else {
-        setRooms(roomResult.data);
-      }
-      setIsLoading(false);
-    };
-    fetchData();
-  }, []);
+  const fetchData = async () => {
+    setIsLoading(true);
+    const roomResult = await getAllRoom();
+    if (roomResult.error) {
+      Toast.show({
+        text1: "Error",
+        text2: roomResult.error,
+        position: "top",
+      });
+    } else {
+      setRooms(roomResult.data);
+    }
+    setIsLoading(false);
+  };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchData();
+    }, [])
+  );
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator animating={true} color={MD2Colors.red800} size={"large"}/>
+      </View>
+    );
+  }
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
       <Text className="text-3xl font-bold text-center my-3">Rooms</Text>
