@@ -69,6 +69,7 @@ const SignIn = () => {
           className="mb-3"
           textContentType="emailAddress"
           keyboardType="email-address"
+          autoCapitalize="none"
         />
         <TextInput
           label="Password"
