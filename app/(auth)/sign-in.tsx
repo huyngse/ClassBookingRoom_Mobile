@@ -1,16 +1,26 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
-import { Button, TextInput } from "react-native-paper";
+import {
+  ActivityIndicator,
+  Button,
+  MD2Colors,
+  TextInput,
+} from "react-native-paper";
 import { router } from "expo-router";
-import { loginEmail } from "@/lib/api/auth-api";
+import { checkToken, loginEmail } from "@/lib/api/auth-api";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
+import useAuthStore from "@/store/AuthStore";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [isLoading, setIsLoading] = useState(false);
+  const setUser = useAuthStore(state => state.setUser);
   const login = async () => {
+    setIsLoading(true);
     const loginResult = await loginEmail(email, password);
     if (loginResult.error) {
       Toast.show({
@@ -20,20 +30,30 @@ const SignIn = () => {
       });
     } else {
       await AsyncStorage.setItem("accessToken", loginResult.data);
+      const userResult = await checkToken();
+      if (userResult.error) {
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: userResult.error,
+        });
+        localStorage.removeItem("accessToken");
+      } else {
+        setUser(userResult.data ? userResult.data : null);
+      }
       router.replace("/(root)/(tabs)/home");
     }
+    setIsLoading(false);
   };
-
   return (
-    <View className="px-5 h-screen bg-white">
-      <View className="items-center mt-10">
+    <SafeAreaView className="p-5 bg-white flex-1">
+      <View className="items-center">
         <Image
           source={require("../../assets/images/logo2-.png")}
-          className="w-48 h-48"
+          className="w-48 h-[30px]"
           resizeMode="contain"
         />
       </View>
-
       <View className="justify-center gap-4 flex-1">
         <View className="flex items-center pb-6">
           <Text className="text-center text-orange-500 text-4xl font-bold ">
@@ -41,13 +61,14 @@ const SignIn = () => {
           </Text>
           <Text>For Staff</Text>
         </View>
-
         <TextInput
           label="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
           mode="outlined"
           className="mb-3"
+          textContentType="emailAddress"
+          keyboardType="email-address"
         />
         <TextInput
           label="Password"
@@ -63,7 +84,11 @@ const SignIn = () => {
           className="py-1 rounded-lg"
           buttonColor="orange"
         >
-          <Text className="text-black">Login</Text>
+          {isLoading ? (
+            <ActivityIndicator animating={true} color={MD2Colors.red800} />
+          ) : (
+            <Text className="text-black">Login</Text>
+          )}
         </Button>
 
         {/* <View className="flex-row justify-end mt-3">
@@ -94,7 +119,8 @@ const SignIn = () => {
       <Text className="text-center text-xs text-gray-600 mt-5">
         © FPT Booking Room
       </Text>
-    </View>
+      <ExpoStatusBar style="dark" />
+    </SafeAreaView>
   );
 };
 
