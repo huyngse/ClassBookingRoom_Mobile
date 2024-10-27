@@ -2,7 +2,7 @@ import { getAllRoom } from "@/lib/api/room-api";
 import { Room as RoomType } from "@/types/room";
 import { FontAwesome } from "@expo/vector-icons";
 import { addWeeks, endOfWeek, format, startOfWeek } from "date-fns";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Toast from "react-native-toast-message";
 import {
   View,
@@ -12,14 +12,12 @@ import {
   FlatList,
 } from "react-native";
 import {
-  ActivityIndicator,
   Card,
   Checkbox,
-  IconButton,
-  MD2Colors,
 } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
+import Loader from "@/components/Loader";
 
 const RoomCard = ({ room }: { room: RoomType }) => (
   <View className="mb-5">
@@ -71,11 +69,7 @@ const Room = () => {
   );
 
   if (isLoading) {
-    return (
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator animating={true} color={MD2Colors.red800} size={"large"}/>
-      </View>
-    );
+    return <Loader />;
   }
   return (
     <SafeAreaView className="flex-1 bg-white px-5">
