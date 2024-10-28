@@ -19,7 +19,7 @@ const Home = () => {
           text1: "Error",
           text2: userResult.error,
         });
-        localStorage.removeItem("accessToken");
+        AsyncStorage.removeItem("accessToken");
       } else {
         setUser(userResult.data ? userResult.data : null);
       }

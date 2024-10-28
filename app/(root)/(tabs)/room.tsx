@@ -10,24 +10,30 @@ import {
   TextInput,
   TouchableOpacity,
   FlatList,
+  Pressable,
 } from "react-native";
-import {
-  Card,
-  Checkbox,
-} from "react-native-paper";
+import { Card, Checkbox } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import Loader from "@/components/Loader";
 
 const RoomCard = ({ room }: { room: RoomType }) => (
   <View className="mb-5">
-    <Card>
+    <Card className="bg-white">
       <Card.Cover source={{ uri: room.picture }} />
-      <View className="p-3">
-        <Text className="text-2xl font-semibold">Room {room.roomName}</Text>
-        <Text className="text-lg">{room.roomType.name}</Text>
-        <Text className="">Pending booking: {room.numOfPendingBooking}</Text>
-      </View>
+      <Pressable
+        android_ripple={{ color: "#DDDDDD" }}
+        className="p-3"
+        onPress={() => {
+          router.navigate(`/(root)/room/${room.id}`);
+        }}
+      >
+        <View>
+          <Text className="text-2xl font-semibold">Room {room.roomName}</Text>
+          <Text className="text-lg">{room.roomType.name}</Text>
+          <Text className="">Pending booking: {room.numOfPendingBooking}</Text>
+        </View>
+      </Pressable>
     </Card>
   </View>
 );
@@ -72,7 +78,7 @@ const Room = () => {
     return <Loader />;
   }
   return (
-    <SafeAreaView className="flex-1 bg-white px-5">
+    <SafeAreaView className="flex-1 px-5">
       <Text className="text-3xl font-bold text-center my-3">Rooms</Text>
       <View className="bg-gray-200 rounded-xl flex-row px-4 py-2 items-center my-2">
         {/* Search icon */}
