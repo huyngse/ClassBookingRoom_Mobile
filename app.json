@@ -23,7 +23,6 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.giahuy7753.ClassBookingRoom_Mobile",
-      "bundleIdentifier": "com.giahuy7753.ClassBookingRoom_Mobile",
       "googleServicesFile": "./google-services.json"
     },
     "web": {
@@ -40,9 +39,7 @@
             "useFrameworks": "static"
           }
         }
-      ],
-      "@react-native-firebase/app",
-      "@react-native-firebase/auth"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import useAuthStore from "@/store/AuthStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { checkToken } from "@/lib/api/auth-api";
@@ -8,6 +8,7 @@ import Toast from "react-native-toast-message";
 const Home = () => {
   const setUser = useAuthStore((state) => state.setUser);
   const loggedUser = useAuthStore((state) => state.user);
+
   useEffect(() => {
     const fetchData = async () => {
       const accessToken = await AsyncStorage.getItem("accessToken");
@@ -21,20 +22,22 @@ const Home = () => {
         });
         AsyncStorage.removeItem("accessToken");
       } else {
-        setUser(userResult.data ? userResult.data : null);
+        setUser(userResult.data);
       }
     };
     fetchData();
   }, [setUser]);
-  const isSignedIn = loggedUser != null;
 
-  if (isSignedIn) {
-    return (
-      <>
-        <Redirect href={"/(root)/(tabs)/home"} />
-      </>
-    );
-  }
+  useEffect(() => {
+    const check = async () => {
+      const token = await AsyncStorage.getItem("accessToken");
+      if (token) {
+        router.replace("/(root)/(tabs)/home");
+      }
+    };
+    check();
+  }, []);
+
   return (
     <>
       <Redirect href="/(auth)/sign-in" />

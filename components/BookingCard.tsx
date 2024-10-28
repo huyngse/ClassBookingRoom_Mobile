@@ -6,7 +6,7 @@ import { Button, Card } from "react-native-paper";
 
 const BookingCard = ({ booking }: { booking: Booking }) => {
     return (
-      <Card className="p-3">
+      <Card className="p-3 mb-2">
         <Text className="font-semibold text-xl">{booking.code}</Text>
         <Text>
           <Text className="font-bold">Booked by: </Text>

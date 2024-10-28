@@ -14,10 +14,5 @@
   },
   "submit": {
     "production": {}
-  },
-  "production": {
-    "android": {
-      "image": "latest"
-    }
   }
 }
