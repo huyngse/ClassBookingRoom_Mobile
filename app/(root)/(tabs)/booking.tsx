@@ -1,16 +1,17 @@
-import { View, Text } from "react-native";
 import React, { useCallback, useState } from "react";
-import { Booking } from "@/types/booking";
+import { View, Text, FlatList } from "react-native";
 import { getAllBookingRequest } from "@/lib/api/booking-api";
 import Toast from "react-native-toast-message";
 import { useFocusEffect } from "expo-router";
 import Loader from "@/components/Loader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BookingCard from "@/components/BookingCard";
+import { Booking } from "@/types/booking";
 
-const booking = () => {
+const BookingScreen = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
   const fetchData = async () => {
     setIsLoading(true);
     const bookingResult = await getAllBookingRequest();
@@ -25,24 +26,26 @@ const booking = () => {
     }
     setIsLoading(false);
   };
+
   useFocusEffect(
     useCallback(() => {
       fetchData();
     }, [])
   );
+
   if (isLoading) return <Loader />;
+
   return (
-    <SafeAreaView>
-      <Text className="text-3xl font-bold text-center my-3">Bookings</Text>
-      <View className="p-3">
-        {bookings.map((booking) => {
-          return (
-            <BookingCard booking={booking} key={`booking-${booking.id}`} />
-          );
-        })}
-      </View>
+    <SafeAreaView className="flex-1">
+      <Text className="text-3xl pt-5 font-bold text-center my-3">Bookings</Text>
+      <FlatList
+        data={bookings}
+        keyExtractor={(item) => `booking-${item.id}`}
+        renderItem={({ item }) => <BookingCard booking={item} fetchData={fetchData} />}
+        contentContainerStyle={{ padding: 16 }}
+      />
     </SafeAreaView>
   );
 };
 
-export default booking;
+export default BookingScreen;
