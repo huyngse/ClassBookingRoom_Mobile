@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Loader from "@/components/Loader";
 import { Button, TouchableRipple } from "react-native-paper";
 import useRerender from "@/hooks/useRerender";
-import { useFocusEffect } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 const RoomType = () => {
   const [roomTypes, setRoomTypes] = useState<RoomTypes[]>([]);
@@ -42,7 +42,7 @@ const RoomType = () => {
       <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 20 }}>
         Manage room types
       </Text>
-      <Button className="mb-2" mode="contained">
+      <Button className="mb-2" mode="contained" onPress={() => {router.push("/(root)/manage/room-type/create")}}>
         Create new room type
       </Button>
       {roomTypes.map((roomType) => (
