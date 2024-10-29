@@ -1,19 +1,19 @@
 type RoomSlot = {
     id: number;
-    startTime: string;
-    endTime: string;
+    startTime: string; 
+    endTime: string; 
     roomId: number;
-};
-
-export type Booking = {
-    createdAt: string;
-    deletedAt: string | null;
-    updatedAt: string;
+  };
+  
+  export type Booking = {
+    createdAt: string; 
+    deletedAt: string | null; 
+    updatedAt: string; 
     isDeleted: boolean;
     id: number;
     code: string;
     status: string;
-    studentId: string;
+    studentId: string; 
     cohortCode: string;
     studentFullName: string;
     studentEmail: string;
@@ -24,8 +24,9 @@ export type Booking = {
     departmentName: string;
     description: string;
     response: string;
-    roomSlots: RoomSlot[];
+    roomSlots: RoomSlot[]; 
     bookingDate: string;
     roomName: string;
     roomId: number;
-};
+  };
+  

@@ -21,6 +21,7 @@ const Home = () => {
           text2: userResult.error,
         });
         AsyncStorage.removeItem("accessToken");
+        router.replace("/(auth)/sign-in");
       } else {
         setUser(userResult.data);
       }
