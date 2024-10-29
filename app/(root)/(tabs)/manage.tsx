@@ -41,7 +41,7 @@ const ManageMenu = () => {
         </Pressable>
         <Pressable
           android_ripple={{ color: "rgb(200,200,200)" }}
-          onPress={() => router.navigate("/(root)/manage/report")}
+          onPress={() => router.navigate("/(root)/manage/room-type")}
         >
           <List.Item
             title="Room Types"
@@ -51,7 +51,7 @@ const ManageMenu = () => {
         </Pressable>
         <Pressable
           android_ripple={{ color: "rgb(200,200,200)" }}
-          onPress={() => router.navigate("/(root)/manage/report")}
+          onPress={() => router.navigate("/(root)/manage/user")}
         >
           <List.Item
             title="Users"

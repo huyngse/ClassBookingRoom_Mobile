@@ -1,79 +1,71 @@
-import React, { useState } from 'react';
-import { View, Text, Switch, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Switch, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import { CheckIcon, XIcon } from 'lucide-react-native';
 import { styled } from 'nativewind';
 import { useNavigation } from '@react-navigation/native';
-
-const students = [
-  {
-    id: 1,
-    fullName: 'Nguyễn Văn A',
-    email: 'nguyenvana@example.com',
-    department: 'Công nghệ thông tin',
-    cohort: 'K15',
-    avatar: 'https://i.pravatar.cc/100?img=1',
-    createdAt: '2022-01-01',
-    updatedAt: '2023-01-01',
-    isVerified: false,
-    status: true,
-  },
-  {
-    id: 2,
-    fullName: 'Trần Thị B',
-    email: 'tranthib@example.com',
-    department: 'Quản trị kinh doanh',
-    cohort: 'K16',
-    avatar: 'https://i.pravatar.cc/100?img=2',
-    createdAt: '2021-09-01',
-    updatedAt: '2022-12-12',
-    isVerified: true,
-    status: false,
-  },
-  {
-    id: 3,
-    fullName: 'Phạm Văn C',
-    email: 'phamvanc@example.com',
-    department: 'Kỹ thuật phần mềm',
-    cohort: 'K17',
-    avatar: 'https://i.pravatar.cc/100?img=3',
-    createdAt: '2023-02-15',
-    updatedAt: '2023-03-20',
-    isVerified: true,
-    status: true,
-  },
-];
+import { getAllUsers } from '@/lib/api/user-api'; // Import API thật
+import { User } from '@/types/user';
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
 const StyledButton = styled(Button);
 
 const Users = () => {
-  const [studentsData, setStudentsData] = useState(students);
+  const [studentsData, setStudentsData] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Khai báo navigation
   const navigation = useNavigation();
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      setLoading(true);
+      const { data, error } = await getAllUsers(); // Gọi API thật
+      if (!error) {
+        setStudentsData(data); // Cập nhật dữ liệu từ API
+      } else {
+        setError(error); // Xử lý lỗi nếu có
+      }
+      setLoading(false);
+    };
+
+    fetchUsers();
+  }, []);
+
   const toggleStatus = (id) => {
     setStudentsData((prevState) =>
       prevState.map((student) =>
-        student.id === id ? { ...student, status: !student.status } : student
+        student.id === id
+          ? { ...student, status: student.status === 'Active' ? 'Inactive' : 'Active' } 
+          : student // Trả về student nếu id không khớp
       )
     );
   };
+  ;
+  
 
   const toggleVerify = (id) => {
     setStudentsData((prevState) =>
       prevState.map((student) =>
-        student.id === id ? { ...student, isVerified: !student.isVerified } : student
+        student.id === id ? { ...student, isVerified: !student.isVerify } : student
       )
     );
   };
 
   const handleEdit = (student) => {
     // Điều hướng đến trang EditStudent và truyền dữ liệu sinh viên
-   navigation.navigate('edit-student', { student });
+    navigation.navigate('edit-student', { student });
   };
+
+  if (loading) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+
+  if (error) {
+    return <Text>Error: {error}</Text>;
+  }
 
   return (
     <ScrollView className="p-4">
@@ -88,17 +80,14 @@ const Users = () => {
       {studentsData.map((student) => (
         <StyledView key={student.id} className="mb-8 p-4 border border-gray-300 rounded-lg">
           <StyledView className="items-center mb-4">
-            <Image
-              source={{ uri: student.avatar }}
-              className="w-24 h-24 rounded-full"
-            />
+            <Image source={{ uri: student.profileImageURL }} className="w-24 h-24 rounded-full" />
           </StyledView>
 
           <StyledView className="mb-4">
             <StyledText className="text-lg font-bold">Full Name: {student.fullName}</StyledText>
             <StyledText>Email: {student.email}</StyledText>
-            <StyledText>Department: {student.department}</StyledText>
-            <StyledText>Cohort: {student.cohort}</StyledText>
+            <StyledText>Department: {student.departmentId}</StyledText>
+            <StyledText>Cohort: {student.cohortId}</StyledText>
             <StyledText>Created At: {student.createdAt}</StyledText>
             <StyledText>Updated At: {student.updatedAt}</StyledText>
           </StyledView>
@@ -110,7 +99,7 @@ const Users = () => {
 
           <StyledView className="flex-row items-center justify-between mb-4">
             <StyledText>Verify:</StyledText>
-            {student.isVerified ? (
+            {student.isVerify ? (
               <CheckIcon className="text-green-500" />
             ) : (
               <XIcon className="text-red-500" />
@@ -118,7 +107,7 @@ const Users = () => {
           </StyledView>
 
           <StyledView className="flex-row justify-between">
-            {!student.isVerified ? (
+            {!student.isVerify ? (
               <>
                 <StyledButton
                   mode="contained"
@@ -130,7 +119,7 @@ const Users = () => {
                 <StyledButton
                   mode="contained"
                   className="bg-orange-500"
-                  onPress={() => alert(`Rejected student: ${student.fullName}`)}
+                  onPress={() => Alert.alert(`Rejected student: ${student.fullName}`)}
                 >
                   Reject
                 </StyledButton>
@@ -139,7 +128,7 @@ const Users = () => {
               <StyledButton
                 mode="contained"
                 className="bg-red-500"
-                onPress={() => alert(`Deleted student: ${student.fullName}`)}
+                onPress={() => Alert.alert(`Deleted student: ${student.fullName}`)}
               >
                 Delete
               </StyledButton>
@@ -149,7 +138,7 @@ const Users = () => {
             <StyledButton
               mode="contained"
               className="bg-blue-500 ml-2"
-              onPress={() => handleEdit(student)}  // Điều hướng đến trang Edit
+              onPress={() => handleEdit(student)} // Điều hướng đến trang Edit
             >
               Edit
             </StyledButton>
