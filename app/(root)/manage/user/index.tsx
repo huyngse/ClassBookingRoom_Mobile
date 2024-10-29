@@ -54,7 +54,7 @@ const Users = () => {
     );
   };
 
-  const handleEdit = (student) => {
+  const handleEdit = (student: any) => {
     // Điều hướng đến trang EditStudent và truyền dữ liệu sinh viên
     navigation.navigate('edit-student', { student });
   };
@@ -70,7 +70,9 @@ const Users = () => {
   return (
     <ScrollView className="p-4">
       <StyledView className="items-center mb-4">
-        <StyledText className="text-2xl pt-8 font-bold">Manage Accounts</StyledText>
+        <StyledText className="text-2xl pt-8 font-bold">
+          Manage Accounts
+        </StyledText>
       </StyledView>
 
       <StyledButton mode="contained" className="bg-pink-500 mb-4">
@@ -78,13 +80,18 @@ const Users = () => {
       </StyledButton>
 
       {studentsData.map((student) => (
-        <StyledView key={student.id} className="mb-8 p-4 border border-gray-300 rounded-lg">
+        <StyledView
+          key={student.id}
+          className="mb-8 p-4 border border-gray-300 rounded-lg"
+        >
           <StyledView className="items-center mb-4">
             <Image source={{ uri: student.profileImageURL }} className="w-24 h-24 rounded-full" />
           </StyledView>
 
           <StyledView className="mb-4">
-            <StyledText className="text-lg font-bold">Full Name: {student.fullName}</StyledText>
+            <StyledText className="text-lg font-bold">
+              Full Name: {student.fullName}
+            </StyledText>
             <StyledText>Email: {student.email}</StyledText>
             <StyledText>Department: {student.departmentId}</StyledText>
             <StyledText>Cohort: {student.cohortId}</StyledText>
@@ -94,7 +101,10 @@ const Users = () => {
 
           <StyledView className="flex-row items-center justify-between mb-4">
             <StyledText>Status:</StyledText>
-            <Switch value={student.status} onValueChange={() => toggleStatus(student.id)} />
+            <Switch
+              value={student.status}
+              onValueChange={() => toggleStatus(student.id)}
+            />
           </StyledView>
 
           <StyledView className="flex-row items-center justify-between mb-4">
@@ -138,6 +148,7 @@ const Users = () => {
             <StyledButton
               mode="contained"
               className="bg-blue-500 ml-2"
+              onPress={() => handleEdit(student)} // Điều hướng đến trang Edit
               onPress={() => handleEdit(student)} // Điều hướng đến trang Edit
             >
               Edit

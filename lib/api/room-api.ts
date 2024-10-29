@@ -38,6 +38,15 @@ export const getRoomById = async (roomId: number) => {
   }
 };
 
+export const getBookingByRoomId = async (roomId: number) => {
+  try {
+    const { data } = await axiosClient.get(`/api/rooms/${roomId}/bookings`);
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
+
 export const getRoomSlots = async (roomId: number) => {
   try {
     const { data } = await axiosClient.get(`/api/rooms/${roomId}/slots`);

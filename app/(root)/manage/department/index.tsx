@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, Alert, TouchableOpacity, Modal, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+  Modal,
+  TextInput,
+} from "react-native";
 import { styled } from "nativewind";
-import { getAllDepartments, deleteDepartment, updateDepartment, createDepartment } from "@/lib/api/department-api"; // Import hàm createDepartment
+import {
+  getAllDepartments,
+  deleteDepartment,
+  updateDepartment,
+  createDepartment,
+} from "@/lib/api/department-api"; // Import hàm createDepartment
 import { Department } from "@/types/department";
 import { formatDate } from "@/utils/date";
 import { useRouter } from "expo-router"; // Sử dụng useRouter để điều hướng
@@ -9,14 +22,14 @@ import { useRouter } from "expo-router"; // Sử dụng useRouter để điều 
 const Departments = () => {
   const [departments, setDepartments] = useState<Department[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null); // Department được chọn để edit
+  const [selectedDepartment, setSelectedDepartment] = useState<any>(null); // Department được chọn để edit
   const [modalVisible, setModalVisible] = useState(false); // Trạng thái modal
   const [isCreating, setIsCreating] = useState(false); // Kiểm tra trạng thái đang tạo mới hay chỉnh sửa
 
   const router = useRouter(); // Để sử dụng router điều hướng
 
   // Điều hướng đến trang chi tiết của department
-  const handleViewDetail = (id) => {
+  const handleViewDetail = (id: number) => {
     router.push(`/manage/department/${id}`);
   };
 
@@ -24,7 +37,7 @@ const Departments = () => {
   const fetchDepartments = async () => {
     try {
       const response = await getAllDepartments();
-      if (response.success && response.data) {
+      if (!response.error && response.data) {
         setDepartments(response.data);
       } else {
         setDepartments([]);
@@ -38,25 +51,34 @@ const Departments = () => {
   };
 
   // Hàm xử lý xóa department
-  const handleDelete = async (id) => {
-    Alert.alert("Confirm Delete", "Are you sure you want to delete this department?", [
-      { text: "Cancel", style: "cancel" },
-      {
-        text: "OK",
-        onPress: async () => {
-          console.log("Delete button clicked for ID:", id);
-          const response = await deleteDepartment(id);
-          console.log("Delete response:", response);
+  const handleDelete = async (id: number) => {
+    Alert.alert(
+      "Confirm Delete",
+      "Are you sure you want to delete this department?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "OK",
+          onPress: async () => {
+            console.log("Delete button clicked for ID:", id);
+            const response = await deleteDepartment(id);
+            console.log("Delete response:", response);
 
-          if (response.success) {
-            setDepartments(departments.filter((department) => department.id !== id));
-            Alert.alert("Deleted", "Department has been deleted.");
-          } else {
-            Alert.alert("Error", `Failed to delete department: ${response.error}`);
-          }
+            if (!response.error) {
+              setDepartments(
+                departments.filter((department) => department.id !== id)
+              );
+              Alert.alert("Deleted", "Department has been deleted.");
+            } else {
+              Alert.alert(
+                "Error",
+                `Failed to delete department: ${response.error}`
+              );
+            }
+          },
         },
-      },
-    ]);
+      ]
+    );
   };
 
   // Hàm xử lý khi nhấn Edit
@@ -81,23 +103,29 @@ const Departments = () => {
       if (isCreating) {
         // Tạo mới department
         const response = await createDepartment({ name });
-        if (response.success) {
+        if (!response.error) {
           setModalVisible(false);
           fetchDepartments(); // Làm mới danh sách sau khi tạo thành công
           Alert.alert("Success", "Department has been created.");
         } else {
-          Alert.alert("Error", `Failed to create department: ${response.error}`);
+          Alert.alert(
+            "Error",
+            `Failed to create department: ${response.error}`
+          );
         }
       } else {
         // Cập nhật department
         const { id } = selectedDepartment;
         const response = await updateDepartment(id, { name });
-        if (response.success) {
+        if (!response.error) {
           setModalVisible(false);
           fetchDepartments();
           Alert.alert("Success", "Department has been updated.");
         } else {
-          Alert.alert("Error", `Failed to update department: ${response.error}`);
+          Alert.alert(
+            "Error",
+            `Failed to update department: ${response.error}`
+          );
         }
       }
     }
@@ -131,9 +159,14 @@ const Departments = () => {
 
         {departments.length > 0 ? (
           departments.map((department) => (
-            <TouchableOpacity key={department.id} onPress={() => handleViewDetail(department.id)}>
+            <TouchableOpacity
+              key={department.id}
+              onPress={() => handleViewDetail(department.id)}
+            >
               <StyledView className="mb-4 p-4 bg-white shadow-lg rounded-lg">
-                <StyledText className="text-lg font-bold text-blue-700">{department.name}</StyledText>
+                <StyledText className="text-lg font-bold text-blue-700">
+                  {department.name}
+                </StyledText>
                 <StyledText className="text-sm text-gray-600">
                   Created At: {formatDate(new Date(department.createdAt))}
                 </StyledText>
@@ -156,11 +189,15 @@ const Departments = () => {
         >
           <View className="flex-1 justify-center items-center bg-orange-200 bg-opacity-50">
             <View className="bg-white p-6 rounded-lg w-3/4">
-              <Text className="text-xl font-bold mb-4">{isCreating ? "Create Department" : "Edit Department"}</Text>
+              <Text className="text-xl font-bold mb-4">
+                {isCreating ? "Create Department" : "Edit Department"}
+              </Text>
               <TextInput
                 placeholder="Department Name"
                 value={selectedDepartment?.name || ""}
-                onChangeText={(text) => setSelectedDepartment({ ...selectedDepartment, name: text })}
+                onChangeText={(text) =>
+                  setSelectedDepartment({ ...selectedDepartment, name: text })
+                }
                 className="border p-2 rounded mb-4"
               />
               <View className="flex-row justify-between">
@@ -174,7 +211,9 @@ const Departments = () => {
                   onPress={handleSave} // Gọi hàm handleSave để lưu thông tin
                   className="bg-green-500 p-3 rounded-lg w-24 items-center"
                 >
-                  <Text className="text-white text-sm">{isCreating ? "Create" : "Save"}</Text>
+                  <Text className="text-white text-sm">
+                    {isCreating ? "Create" : "Save"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>

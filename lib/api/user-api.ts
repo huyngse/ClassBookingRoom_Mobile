@@ -151,3 +151,12 @@ export const sendVerificationEmail = async (userId: string) => {
     return handleApiError(error);
   }
 };
+
+export const updateUserPushToken = async (id: string, pushToken: string) => {
+  try {
+    const { data } = await axiosClient.put(`/api/users/${id}/push-token`, "\"" + pushToken + "\"");
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+}

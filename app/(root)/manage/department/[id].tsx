@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, ScrollView, ActivityIndicator, Modal, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  ActivityIndicator,
+  Modal,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { styled } from "nativewind";
 import Toast from "react-native-toast-message"; // Import Toast
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { getDepartmentById } from "@/lib/api/department-api";
-import { createActivity, updateActivity, deleteActivity } from "@/lib/api/activity-api"; // Import API cho activities
+import {
+  createActivity,
+  updateActivity,
+  deleteActivity,
+} from "@/lib/api/activity-api"; // Import API cho activities
 import { Department } from "@/types/department"; // Import kiểu Department
 import { formatDate } from "@/utils/date";
 
@@ -13,7 +25,11 @@ const DepartmentDetail = () => {
   const [department, setDepartment] = useState<Department | null>(null); // Sử dụng kiểu Department cho state
   const [loading, setLoading] = useState(true); // Trạng thái loading
   const [modalVisible, setModalVisible] = useState(false); // Trạng thái modal
-  const [activityForm, setActivityForm] = useState({ code: "", name: "", activityId: null }); // Form dữ liệu cho activity
+  const [activityForm, setActivityForm] = useState<{
+    code: string;
+    name: string;
+    activityId: number | undefined;
+  }>({ code: "", name: "", activityId: undefined }); // Form dữ liệu cho activity
   const [isEdit, setIsEdit] = useState(false); // Trạng thái kiểm tra Edit
   const router = useRouter(); // Khởi tạo useRouter để điều hướng
 
@@ -21,7 +37,7 @@ const DepartmentDetail = () => {
   const fetchDepartmentDetail = async () => {
     try {
       const response = await getDepartmentById(Number(id)); // Đảm bảo ID là kiểu số
-      if (response.success && response.data) {
+      if (!response.error && response.data) {
         setDepartment(response.data); // Lưu dữ liệu department vào state
       } else {
         setDepartment(null);
@@ -45,7 +61,10 @@ const DepartmentDetail = () => {
     try {
       if (isEdit && activityForm.activityId) {
         // Cập nhật activity
-        const response = await updateActivity(activityForm.activityId, { code: activityForm.code, name: activityForm.name });
+        const response = await updateActivity(activityForm.activityId, {
+          code: activityForm.code,
+          name: activityForm.name,
+        });
         console.log("API response for update: ", response); // Kiểm tra phản hồi API sau khi gọi
         Toast.show({
           type: "success",
@@ -54,7 +73,11 @@ const DepartmentDetail = () => {
         });
       } else {
         // Tạo mới activity
-        const response = await createActivity({ code: activityForm.code, name: activityForm.name, departmentId: Number(id) });
+        const response = await createActivity({
+          code: activityForm.code,
+          name: activityForm.name,
+          departmentId: Number(id),
+        });
         console.log("API response for create: ", response); // Kiểm tra phản hồi API sau khi gọi
         Toast.show({
           type: "success",
@@ -102,7 +125,9 @@ const DepartmentDetail = () => {
     return (
       <StyledView className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#0000ff" />
-        <StyledText className="text-base text-gray-500">Loading department details...</StyledText>
+        <StyledText className="text-base text-gray-500">
+          Loading department details...
+        </StyledText>
       </StyledView>
     );
   }
@@ -110,7 +135,9 @@ const DepartmentDetail = () => {
   if (!department) {
     return (
       <StyledView className="flex-1 justify-center items-center">
-        <StyledText className="text-lg text-red-500">Department not found.</StyledText>
+        <StyledText className="text-lg text-red-500">
+          Department not found.
+        </StyledText>
       </StyledView>
     );
   }
@@ -122,17 +149,21 @@ const DepartmentDetail = () => {
         <StyledButton
           className="bg-green-500 p-3 rounded mb-4"
           onPress={() => {
-            setActivityForm({ code: "", name: "", activityId: null });
+            setActivityForm({ code: "", name: "", activityId: undefined });
             setIsEdit(false);
             setModalVisible(true);
           }}
         >
-          <StyledText className="text-white text-center">Create New Activity</StyledText>
+          <StyledText className="text-white text-center">
+            Create New Activity
+          </StyledText>
         </StyledButton>
 
         {/* Thông tin department */}
         <StyledView className="mb-4 p-4 bg-white shadow-lg rounded-lg">
-          <StyledText className="text-xl font-bold text-blue-700">{department.name}</StyledText>
+          <StyledText className="text-xl font-bold text-blue-700">
+            {department.name}
+          </StyledText>
           <StyledText className="text-sm text-gray-600">
             Created At: {formatDate(new Date(department.createdAt))}
           </StyledText>
@@ -143,7 +174,9 @@ const DepartmentDetail = () => {
 
         {/* Danh sách activities */}
         <StyledView className="mb-4 p-4 bg-white shadow-lg rounded-lg">
-          <StyledText className="text-lg font-bold text-blue-700 mb-2">Activities</StyledText>
+          <StyledText className="text-lg font-bold text-blue-700 mb-2">
+            Activities
+          </StyledText>
           {department.activites && department.activites.length > 0 ? (
             department.activites.map((activity) => (
               <StyledView
@@ -151,8 +184,12 @@ const DepartmentDetail = () => {
                 className="mb-2 p-3 bg-gray-100 rounded-lg flex-row justify-between items-center"
               >
                 <View className="flex">
-                  <StyledText className="text-lg font-bold text-black">{activity.name}</StyledText>
-                  <StyledText className="text-sm text-gray-600">Activity Code: {activity.code}</StyledText>
+                  <StyledText className="text-lg font-bold text-black">
+                    {activity.name}
+                  </StyledText>
+                  <StyledText className="text-sm text-gray-600">
+                    Activity Code: {activity.code}
+                  </StyledText>
                 </View>
                 <StyledView className="flex-row space-x-2">
                   {/* Nút Edit bên trái */}
@@ -160,7 +197,11 @@ const DepartmentDetail = () => {
                     className="bg-blue-500 p-2 rounded"
                     onPress={() => {
                       console.log("Editing activity: ", activity); // Log thông tin của activity được chọn
-                      setActivityForm({ code: activity.code, name: activity.name, activityId: activity.id });
+                      setActivityForm({
+                        code: activity.code,
+                        name: activity.name,
+                        activityId: activity.id,
+                      });
                       setIsEdit(true);
                       setModalVisible(true);
                     }}
@@ -168,14 +209,19 @@ const DepartmentDetail = () => {
                     <StyledText className="text-white">Edit</StyledText>
                   </StyledButton>
                   {/* Nút Delete bên phải */}
-                  <StyledButton className="bg-red-500 p-2 rounded" onPress={() => handleDeleteActivity(activity.id)}>
+                  <StyledButton
+                    className="bg-red-500 p-2 rounded"
+                    onPress={() => handleDeleteActivity(activity.id)}
+                  >
                     <StyledText className="text-white">Delete</StyledText>
                   </StyledButton>
                 </StyledView>
               </StyledView>
             ))
           ) : (
-            <StyledText>No activities available for this department.</StyledText>
+            <StyledText>
+              No activities available for this department.
+            </StyledText>
           )}
         </StyledView>
 
@@ -209,11 +255,21 @@ const DepartmentDetail = () => {
                 }}
                 className="border p-2 mb-2 rounded"
               />
-              <StyledButton className="bg-blue-500 p-2 rounded" onPress={handleCreateOrUpdateActivity}>
-                <StyledText className="text-white">{isEdit ? "Update Activity" : "Create Activity"}</StyledText>
+              <StyledButton
+                className="bg-blue-500 p-2 rounded"
+                onPress={handleCreateOrUpdateActivity}
+              >
+                <StyledText className="text-white">
+                  {isEdit ? "Update Activity" : "Create Activity"}
+                </StyledText>
               </StyledButton>
-              <StyledButton className="bg-gray-500 p-2 mt-2 rounded" onPress={() => setModalVisible(false)}>
-                <StyledText className="text-white text-center">Close</StyledText>
+              <StyledButton
+                className="bg-gray-500 p-2 mt-2 rounded"
+                onPress={() => setModalVisible(false)}
+              >
+                <StyledText className="text-white text-center">
+                  Close
+                </StyledText>
               </StyledButton>
             </StyledView>
           </StyledView>

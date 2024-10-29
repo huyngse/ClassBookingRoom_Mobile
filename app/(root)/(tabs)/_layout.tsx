@@ -1,38 +1,11 @@
 import { Tabs } from "expo-router";
 import React, { ReactNode } from "react";
 
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { View } from "react-native";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { AntDesign, Octicons } from "@expo/vector-icons";
-const TabIcon = ({
-  focused,
-  source,
-}: {
-  focused: boolean;
-  source: ReactNode;
-}) => {
-  return (
-    <View
-      className={`flex-row justify-center items-center rounded-ful ${
-        focused && "bg-green-300"
-      }`}
-    >
-      <View
-        className={`rounded-full w-12 h-12 items-center justify-center ${
-          focused && "bg-green-400"
-        }`}
-      >
-        {source}
-      </View>
-    </View>
-  );
-};
+import { AntDesign } from "@expo/vector-icons";
+
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Tabs

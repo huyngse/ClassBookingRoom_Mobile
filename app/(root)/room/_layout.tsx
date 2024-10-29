@@ -4,8 +4,8 @@ import { Stack } from "expo-router";
 
 const RoomLayout = () => {
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="[id]" />
+    <Stack screenOptions={{ headerShown: true }}>
+      <Stack.Screen name="[id]" options={{title: "Room Detail"}} />
     </Stack>
   );
 };

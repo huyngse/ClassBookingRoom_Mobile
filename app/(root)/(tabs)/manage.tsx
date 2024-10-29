@@ -16,7 +16,7 @@ const ManageMenu = () => {
           <List.Item
             title="Departments"
             description="Manage departments"
-            left={(props) => <List.Icon {...props} icon="folder" />}
+            left={(props) => <List.Icon {...props} icon="account-box-multiple" />}
           />
         </Pressable>
         <Pressable
@@ -26,7 +26,7 @@ const ManageMenu = () => {
           <List.Item
             title="Reports"
             description="Manage reports"
-            left={(props) => <List.Icon {...props} icon="folder" />}
+            left={(props) => <List.Icon {...props} icon="alert" />}
           />
         </Pressable>
         <Pressable
@@ -36,7 +36,7 @@ const ManageMenu = () => {
           <List.Item
             title="Rooms"
             description="Manage rooms"
-            left={(props) => <List.Icon {...props} icon="folder" />}
+            left={(props) => <List.Icon {...props} icon="alpha-r-box-outline" />}
           />
         </Pressable>
         <Pressable
@@ -46,7 +46,7 @@ const ManageMenu = () => {
           <List.Item
             title="Room Types"
             description="Manage room types"
-            left={(props) => <List.Icon {...props} icon="folder" />}
+            left={(props) => <List.Icon {...props} icon="tag" />}
           />
         </Pressable>
         <Pressable
@@ -56,7 +56,7 @@ const ManageMenu = () => {
           <List.Item
             title="Users"
             description="Manage users"
-            left={(props) => <List.Icon {...props} icon="folder" />}
+            left={(props) => <List.Icon {...props} icon="account" />}
           />
         </Pressable>
       </ScrollView>
