@@ -141,7 +141,7 @@ const RoomDetail = () => {
             <Text className="text-lg font-semibold">Pending bookings</Text>
             {bookings.map((booking) => {
               return (
-                <BookingCard booking={booking} key={`booking-${booking.id}`} />
+                <BookingCard booking={booking} key={`booking-${booking.id}`} fetchData={fetchData}/>
               );
             })}
              {

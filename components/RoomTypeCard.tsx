@@ -81,7 +81,12 @@ const RoomTypeCard = ({
             </Pressable>
           }
         >
-          <Menu.Item onPress={() => {}} title="Edit" />
+          <Menu.Item
+            onPress={() => {
+              router.navigate(`/(root)/manage/room-type/update/${roomType.id}`);
+            }}
+            title="Edit"
+          />
           <Menu.Item
             onPress={() => {
               router.navigate(`/(root)/manage/room-type/${roomType.id}`);
