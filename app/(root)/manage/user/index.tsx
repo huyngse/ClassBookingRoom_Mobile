@@ -5,13 +5,11 @@ import {
   Switch,
   Image,
   ScrollView,
-  ActivityIndicator,
   Alert,
 } from "react-native";
 import { Button } from "react-native-paper";
 import { CheckIcon, XIcon } from "lucide-react-native";
 import { styled } from "nativewind";
-import { useNavigation } from "@react-navigation/native";
 import { getAllUsers } from "@/lib/api/user-api"; 
 import { User } from "@/types/user";
 import { router } from "expo-router";
@@ -25,8 +23,6 @@ const Users = () => {
   const [studentsData, setStudentsData] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUsers = async () => {
