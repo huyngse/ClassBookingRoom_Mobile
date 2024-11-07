@@ -9,6 +9,7 @@ export type User = {
   profileImageURL: string;
   status: string;
   departmentId: number;
+  departmentName: string;
   cohortId?: number;
   isVerify:boolean;
   note: string;

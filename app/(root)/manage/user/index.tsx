@@ -1,11 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Switch, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
-import { Button } from 'react-native-paper';
-import { CheckIcon, XIcon } from 'lucide-react-native';
-import { styled } from 'nativewind';
-import { useNavigation } from '@react-navigation/native';
-import { getAllUsers } from '@/lib/api/user-api'; // Import API thật
-import { User } from '@/types/user';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  Switch,
+  Image,
+  ScrollView,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
+import { Button } from "react-native-paper";
+import { CheckIcon, XIcon } from "lucide-react-native";
+import { styled } from "nativewind";
+import { useNavigation } from "@react-navigation/native";
+import { getAllUsers } from "@/lib/api/user-api"; 
+import { User } from "@/types/user";
+import { router } from "expo-router";
+import Loader from "@/components/Loader";
 
 const StyledView = styled(View);
 const StyledText = styled(Text);
@@ -16,17 +26,16 @@ const Users = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Khai báo navigation
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
-      const { data, error } = await getAllUsers(); // Gọi API thật
+      const { data, error } = await getAllUsers(); 
       if (!error) {
-        setStudentsData(data); // Cập nhật dữ liệu từ API
+        setStudentsData(data); 
       } else {
-        setError(error); // Xử lý lỗi nếu có
+        setError(error);
       }
       setLoading(false);
     };
@@ -34,33 +43,36 @@ const Users = () => {
     fetchUsers();
   }, []);
 
-  const toggleStatus = (id) => {
+  const toggleStatus = (id: string) => {
     setStudentsData((prevState) =>
-      prevState.map((student) =>
-        student.id === id
-          ? { ...student, status: student.status === 'Active' ? 'Inactive' : 'Active' } 
-          : student // Trả về student nếu id không khớp
+      prevState.map(
+        (student) =>
+          student.id === id
+            ? {
+                ...student,
+                status: student.status === "Active" ? "Inactive" : "Active",
+              }
+            : student 
       )
     );
   };
-  ;
-  
-
-  const toggleVerify = (id) => {
+  const toggleVerify = (id: string) => {
     setStudentsData((prevState) =>
       prevState.map((student) =>
-        student.id === id ? { ...student, isVerified: !student.isVerify } : student
+        student.id === id
+          ? { ...student, isVerified: !student.isVerify }
+          : student
       )
     );
   };
 
   const handleEdit = (student: any) => {
-    // Điều hướng đến trang EditStudent và truyền dữ liệu sinh viên
-    navigation.navigate('edit-student', { student });
+    router.setParams({ id: student.id });
+    router.navigate("/manage/user/update");
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return <Loader />;
   }
 
   if (error) {
@@ -75,9 +87,9 @@ const Users = () => {
         </StyledText>
       </StyledView>
 
-      <StyledButton mode="contained" className="bg-pink-500 mb-4">
+      <Button mode="contained" className="bg-pink-500 mb-4" onPress={() => {router.navigate("/(root)/manage/user/create")}}>
         Create Account
-      </StyledButton>
+      </Button>
 
       {studentsData.map((student) => (
         <StyledView
@@ -85,15 +97,29 @@ const Users = () => {
           className="mb-8 p-4 border border-gray-300 rounded-lg"
         >
           <StyledView className="items-center mb-4">
-            <Image source={{ uri: student.profileImageURL }} className="w-24 h-24 rounded-full" />
+            {student && (
+              <Image
+                style={{ width: 96, height: 96 }}
+                resizeMode={"cover"}
+                source={
+                  isValidUri(student.profileImageURL)
+                    ? { uri: student.profileImageURL }
+                    : require("../../../../assets/images/default-pfp.jpg")
+                }
+                className="rounded-full"
+              />
+            )}
           </StyledView>
-
           <StyledView className="mb-4">
             <StyledText className="text-lg font-bold">
               Full Name: {student.fullName}
             </StyledText>
             <StyledText>Email: {student.email}</StyledText>
-            <StyledText>Department: {student.departmentId}</StyledText>
+            {
+              student.departmentId && (
+                <StyledText>Department: {student.departmentName}</StyledText>
+              )
+            }
             <StyledText>Cohort: {student.cohortId}</StyledText>
             <StyledText>Created At: {student.createdAt}</StyledText>
             <StyledText>Updated At: {student.updatedAt}</StyledText>
@@ -102,7 +128,7 @@ const Users = () => {
           <StyledView className="flex-row items-center justify-between mb-4">
             <StyledText>Status:</StyledText>
             <Switch
-              value={student.status}
+              value={student.status == "Active"}
               onValueChange={() => toggleStatus(student.id)}
             />
           </StyledView>
@@ -129,7 +155,9 @@ const Users = () => {
                 <StyledButton
                   mode="contained"
                   className="bg-orange-500"
-                  onPress={() => Alert.alert(`Rejected student: ${student.fullName}`)}
+                  onPress={() =>
+                    Alert.alert(`Rejected student: ${student.fullName}`)
+                  }
                 >
                   Reject
                 </StyledButton>
@@ -138,7 +166,9 @@ const Users = () => {
               <StyledButton
                 mode="contained"
                 className="bg-red-500"
-                onPress={() => Alert.alert(`Deleted student: ${student.fullName}`)}
+                onPress={() =>
+                  Alert.alert(`Deleted student: ${student.fullName}`)
+                }
               >
                 Delete
               </StyledButton>
@@ -148,8 +178,7 @@ const Users = () => {
             <StyledButton
               mode="contained"
               className="bg-blue-500 ml-2"
-              onPress={() => handleEdit(student)} // Điều hướng đến trang Edit
-              onPress={() => handleEdit(student)} // Điều hướng đến trang Edit
+              onPress={() => handleEdit(student)}
             >
               Edit
             </StyledButton>
@@ -161,3 +190,8 @@ const Users = () => {
 };
 
 export default Users;
+
+const isValidUri = (uri: string) => {
+  const pattern = /^(http|https):\/\/[^ "]+$/;
+  return pattern.test(uri);
+};
