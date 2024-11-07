@@ -2,19 +2,19 @@ import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { getAllRoom, deleteRoom } from '@/lib/api/room-api';
 import { RoomTypes } from '@/types/room-type';
-import Toast from 'react-native-toast-message';
+import Loader from '@/components/Loader';
 import { Room } from '@/types/room';
-import { Loader } from 'lucide-react-native';
+import { router } from 'expo-router';
 
 const Rooms = () => {
-  const [rooms, setRooms] = useState<RoomTypes[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [roomToDelete, setRoomToDelete] = useState(null);
 
   useEffect(() => {
     const fetchRooms = async () => {
       const response = await getAllRoom();
-      if (response.success) {
+      if (!response.error) {
         setRooms(response.data);
       }
       setLoading(false);
@@ -23,18 +23,8 @@ const Rooms = () => {
     fetchRooms();
   }, []);
 
-  const handleEditRoom = (id:Room) => {
-    console.log(`Edit Room ID: ${id}`);
-  };
-
-  const confirmDeleteRoom = (id:Room) => {
-    setRoomToDelete(id);
-    Toast.show({
-      type: 'info',
-      text1: 'Confirm Deletion',
-      text2: 'Tap here to confirm deletion',
-      onPress: () => handleDeleteRoom(id),
-    });
+  const handleEditRoom = (roomId: number) => {
+   router.navigate(`/(root)/manage/room/${roomId}`)
   };
 
   const handleDeleteRoom = async (id) => {
@@ -55,7 +45,7 @@ const Rooms = () => {
     }
   };
 
-  const renderRoomItem = ({ item }) => (
+  const renderRoomItem = ({ item }: {item: Room}) => (
     <View className="flex-row my-2 p-3 rounded-lg bg-gray-200">
       <Image source={{ uri: item.picture }} className="w-40 h-full rounded-lg" />
       <View className="flex-1 ml-3 justify-center">

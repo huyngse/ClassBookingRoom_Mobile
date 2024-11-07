@@ -15,7 +15,7 @@ const BookingCard = ({ booking, fetchData }: { booking: Booking; fetchData: () =
   const handleAccept = async () => {
     setIsLoading(true);
     const result = await acceptBooking(booking.id);
-    if (result.success) {
+    if (!result.error) {
       Toast.show({
         text1: "Booking Accepted",
         text2: `Booking ${booking.code} has been accepted.`,
@@ -35,7 +35,7 @@ const BookingCard = ({ booking, fetchData }: { booking: Booking; fetchData: () =
   const handleDeny = async () => {
     setIsLoading(true);
     const result = await denyBooking(booking.id, denyReason);
-    if (result.success) {
+    if (!result.error) {
       Toast.show({
         text1: "Booking Denied",
         text2: `Booking ${booking.code} has been denied.`,
@@ -78,7 +78,7 @@ const BookingCard = ({ booking, fetchData }: { booking: Booking; fetchData: () =
         <Text className="font-bold">Updated at: </Text>
         {formatDate(toLocalDate(booking.updatedAt), true)}
       </Text>
-      <View className="flex-row gap-2">
+      <View className="flex-row gap-2 flex-wrap">
         <Text>
           <Text className="font-bold">Booked slots: </Text>
         </Text>

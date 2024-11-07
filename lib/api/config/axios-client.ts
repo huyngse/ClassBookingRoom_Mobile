@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-export const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
+export const BASE_URL = "https://classbookingroom-gwa2cchfcuaub5ch.southeastasia-01.azurewebsites.net";
 
 export const axiosClient = axios.create({
     baseURL: BASE_URL,
