@@ -3,16 +3,18 @@ import React, { useEffect, useState } from 'react';
 import { getAllRoom } from '@/lib/api/room-api';
 import { RoomTypes } from '@/types/room-type';
 import Loader from '@/components/Loader';
+import { Room } from '@/types/room';
+import { router } from 'expo-router';
 
 const Rooms = () => {
-  const [rooms, setRooms] = useState<RoomTypes[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch room data on component mount
   useEffect(() => {
     const fetchRooms = async () => {
       const response = await getAllRoom();
-      if (response.success) {
+      if (!response.error) {
         setRooms(response.data);
       }
       setLoading(false);
@@ -21,15 +23,15 @@ const Rooms = () => {
     fetchRooms();
   }, []);
 
-  const handleEditRoom = (roomId) => {
-    console.log(`Edit Room ID: ${roomId}`);
+  const handleEditRoom = (roomId: number) => {
+   router.navigate(`/(root)/manage/room/${roomId}`)
   };
 
-  const handleDeleteRoom = (roomId) => {
+  const handleDeleteRoom = (roomId: number) => {
     console.log(`Delete Room ID: ${roomId}`);
   };
 
-  const renderRoomItem = ({ item }) => (
+  const renderRoomItem = ({ item }: {item: Room}) => (
     <View className="flex-row my-2 p-3 rounded-lg bg-gray-200">
       <Image source={{ uri: item.picture }} className="w-40 h-full rounded-lg" />
       <View className="flex-1 ml-3 justify-center">

@@ -38,12 +38,16 @@ const BookingScreen = () => {
   return (
     <SafeAreaView className="flex-1">
       <Text className="text-3xl pt-5 font-bold text-center my-3">Bookings</Text>
+      {
+        bookings.length == 0 && <Text className="text-center text-3xl">No pending booking</Text>
+      }
       <FlatList
         data={bookings}
         keyExtractor={(item) => `booking-${item.id}`}
         renderItem={({ item }) => <BookingCard booking={item} fetchData={fetchData} />}
         contentContainerStyle={{ padding: 16 }}
       />
+    
     </SafeAreaView>
   );
 };
