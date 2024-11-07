@@ -1,14 +1,16 @@
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { getAllRoom } from '@/lib/api/room-api';
+import { getAllRoom, deleteRoom } from '@/lib/api/room-api';
 import { RoomTypes } from '@/types/room-type';
-import Loader from '@/components/Loader';
+import Toast from 'react-native-toast-message';
+import { Room } from '@/types/room';
+import { Loader } from 'lucide-react-native';
 
 const Rooms = () => {
   const [rooms, setRooms] = useState<RoomTypes[]>([]);
   const [loading, setLoading] = useState(true);
+  const [roomToDelete, setRoomToDelete] = useState(null);
 
-  // Fetch room data on component mount
   useEffect(() => {
     const fetchRooms = async () => {
       const response = await getAllRoom();
@@ -21,12 +23,36 @@ const Rooms = () => {
     fetchRooms();
   }, []);
 
-  const handleEditRoom = (roomId) => {
-    console.log(`Edit Room ID: ${roomId}`);
+  const handleEditRoom = (id:Room) => {
+    console.log(`Edit Room ID: ${id}`);
   };
 
-  const handleDeleteRoom = (roomId) => {
-    console.log(`Delete Room ID: ${roomId}`);
+  const confirmDeleteRoom = (id:Room) => {
+    setRoomToDelete(id);
+    Toast.show({
+      type: 'info',
+      text1: 'Confirm Deletion',
+      text2: 'Tap here to confirm deletion',
+      onPress: () => handleDeleteRoom(id),
+    });
+  };
+
+  const handleDeleteRoom = async (id) => {
+    const response = await deleteRoom(id);
+    if (response.success) {
+      setRooms((prevRooms) => prevRooms.filter((room) => room.id !== id));
+      Toast.show({
+        type: 'success',
+        text1: 'Room Deleted',
+        text2: 'The room has been deleted successfully.',
+      });
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to delete room.',
+      });
+    }
   };
 
   const renderRoomItem = ({ item }) => (
@@ -40,14 +66,14 @@ const Rooms = () => {
         <Text>Pending Bookings: {item.numOfPendingBooking}</Text>
         <View className="flex-row justify-between mt-2">
           <TouchableOpacity
-            className="bg-green-600 px-4 py-2 rounded-full"
+            className="bg-green-500 px-4 py-2 rounded-md"
             onPress={() => handleEditRoom(item.id)}
           >
             <Text className="text-white font-semibold">Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            className="bg-red-600 px-4 py-2 rounded-full"
-            onPress={() => handleDeleteRoom(item.id)}
+            className="bg-red-500 px-4 py-2 rounded-md"
+            onPress={() => confirmDeleteRoom(item.id)}
           >
             <Text className="text-white font-semibold">Delete</Text>
           </TouchableOpacity>
@@ -59,7 +85,7 @@ const Rooms = () => {
   return (
     <View className="flex-1 p-4 bg-white">
       {loading ? (
-        <Loader/>
+      <Loader/>
       ) : (
         <FlatList
           data={rooms}
@@ -67,6 +93,7 @@ const Rooms = () => {
           keyExtractor={(item) => item.id.toString()}
         />
       )}
+      <Toast />
     </View>
   );
 };

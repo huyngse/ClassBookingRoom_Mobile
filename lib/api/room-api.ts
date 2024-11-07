@@ -95,3 +95,38 @@ export const deleteRoomSlot = async (slotId: number) => {
     return handleApiError(error);
   }
 };
+;export const updateRoom = async (
+  id: number,
+  formData: {
+    roomName: string;
+    capacity: number;
+    roomTypeId: number;
+    status: string;
+    picture?: File | string; 
+  }
+) => {
+  try {
+    let pictureUrl = formData.picture;
+
+    
+    // if (formData.picture && formData.picture instanceof File) {
+    //   pictureUrl = await uploadFile(formData.picture); 
+    // }
+
+  
+    const updatedData = {
+      roomName: formData.roomName,
+      capacity: formData.capacity,
+      roomTypeId: formData.roomTypeId,
+      status: formData.status,
+      picture: pictureUrl, 
+    };
+
+    
+    const { data } = await axiosClient.put(`/api/rooms/${id}`, updatedData);
+
+    return { error: null, data: data, success: true };
+  } catch (error) {
+    return handleApiError(error);
+  }
+};
