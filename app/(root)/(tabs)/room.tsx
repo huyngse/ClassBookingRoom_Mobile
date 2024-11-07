@@ -20,7 +20,13 @@ import Loader from "@/components/Loader";
 const RoomCard = ({ room }: { room: RoomType }) => (
   <View className="mb-5">
     <Card className="bg-white">
-      <Card.Cover source={{ uri: room.picture }} />
+      <Card.Cover
+        source={
+          isValidUri(room.picture ?? "")
+            ? { uri: room.picture }
+            : {uri: "https://daihoc.fpt.edu.vn/wp-content/uploads/2023/08/nhung-tien-ich-tai-dh-fpt-hcm-3-650x433.jpeg"}
+        }
+      />
       <Pressable
         android_ripple={{ color: "#DDDDDD" }}
         className="p-3"
@@ -135,4 +141,9 @@ const Room = () => {
     </SafeAreaView>
   );
 };
+const isValidUri = (uri: string) => {
+  const pattern = /^(http|https):\/\/[^ "]+$/;
+  return pattern.test(uri);
+};
+
 export default Room;
